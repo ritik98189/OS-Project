@@ -1,0 +1,63 @@
+#include<iostream>
+using namespace std;
+#include<conio.h>
+class Process{
+	public:
+	int id,cpu;
+	float arrival,left;
+	void data(int x,float y,int z){
+		id=x;
+		arrival=y;
+		cpu=z;
+	}
+}p[50],temp,x;
+int main(){
+	int pn;
+	float tr;
+	cout<<"<<<<<<<<<<<<<<<<<<<< Shortest Time First Non-Primitive >>>>>>>>>>>>>>>>>>>>\n\nEnter no of Processes : ";
+	cin>>pn;
+	for(int i=0;i<pn;i++){
+		int z;
+		float y;
+		cout<<"\nFor process P"<<i+1<<"\n\tArrival Time : ";
+		cin>>y;
+		cout<<"\n\tCpu Time : ";
+		cin>>z;
+		p[i].data(i+1,y,z);
+	}
+	cout<<"\n<<<<<<<<<<<<<<<<<<<< Gannt Chart >>>>>>>>>>>>>>>>>>>>\n\n";
+	float t=0.0;
+	for(int i=0;i<pn;i++){
+		for(int j=i;j<pn;j++){
+			for(int k=j+1;k<pn && k!=j;j++){
+				if(p[j].arrival<=t && p[k].arrival<=t && p[j].cpu>p[k].cpu){
+					temp=p[j];
+					p[j]=p[k];
+					p[k]=temp;
+				}
+			}
+		}
+		if(p[i].arrival<=t){
+			cout<<"\nAt time "<<t<<" to "<<t+p[i].cpu<<"     P"<<p[i].id<<"	is Running";
+			t=t+p[i].cpu;
+			p[i].left=t;	
+		}
+		else{
+			cout<<"\nAt time "<<t<<" to "<<t+p[i].arrival<<" Ideal";
+			t=t+p[i].arrival;
+			i--;
+		}
+	}
+	for(int i=0;i<pn;i++){
+		if(i==0 && p[0].arrival<=1){
+			cout<<"\n\nTurn Around time for P"<<p[0].id<<" is : "<<p[0].left-p[0].arrival+1-p[0].arrival;
+			tr=tr+p[0].left-p[0].arrival+1-p[0].arrival;	
+		}
+		else{
+			cout<<"\n\nTurn Around time for P"<<p[i].id<<" is : "<<p[i].left-p[i].arrival;
+			tr=tr+p[i].left-p[i].arrival;	
+		}
+	}
+	tr=tr/pn;
+	cout<<"\n\nAvarage Turn Around time is "<<tr;
+}
